@@ -1,33 +1,53 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useState } from "react";
 
 function App() {
+  const [selectedDays, setSelectedDays] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
+
+  const [isError, setError] = useState(false);
+
+  const toggleDay = (index) => {
+    setSelectedDays((prevState) => {
+      const newDays = [...prevState];
+      newDays[index] = !newDays[index];
+      return newDays;
+    });
+  };
+
+  const cancelButtonHandler = () => {
+    setError(false);
+  };
+
   const clickHandler = () => {
     const url = document.getElementById("urlInput").value;
     const startTime = document.getElementById("startTime").value;
     const endTime = document.getElementById("endTime").value;
 
-    const monday = document.getElementById("Monday").checked;
-    const tuesday = document.getElementById("Tuesday").checked;
-    const wednesday = document.getElementById("Wednesday").checked;
-    const thru = document.getElementById("Thru").checked;
-    const friday = document.getElementById("Friday").checked;
-    const sat = document.getElementById("Sat").checked;
-    const sunday = document.getElementById("Sunday").checked;
-
-    const days = [monday, tuesday, wednesday, thru, friday, sat, sunday];
-
     if (url && startTime && endTime) {
       chrome.storage.local.get({ blockedSites: [] }, (result) => {
         const blockedSites = result.blockedSites;
-        blockedSites.push({ url, startTime, endTime, days });
+        blockedSites.push({ url, startTime, endTime, days: selectedDays });
         chrome.storage.local.set({ blockedSites: blockedSites }, () => {
           chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             const currentTabId = tabs[0].id;
             chrome.tabs.sendMessage(
               currentTabId,
-              { action: "blockSite", url, startTime, endTime, days },
+              {
+                action: "blockSite",
+                url,
+                startTime,
+                endTime,
+                days: selectedDays,
+              },
               () => {
                 chrome.tabs.reload(currentTabId);
               }
@@ -36,49 +56,160 @@ function App() {
         });
       });
     } else {
-      alert("Please enter a URL, start time, and end time.");
+      setError(true);
     }
   };
 
   return (
-    <div>
-      <h1>Welcome to blocking website</h1>
-      <input type="text" placeholder="Enter the URL to block" id="urlInput" />
-      <input
-        type="time"
-        placeholder="Enter the start time in (HH:MM)"
-        id="startTime"
-      />
-      <input
-        type="time"
-        placeholder="Enter the end time in (HH:MM)"
-        id="endTime"
-      />
+    <div className="text-center mt-5 text-[#b3b4b4]">
+      <h1 className="text-xl font-semibold">Block Website</h1>
+      <div className="flex flex-col justify-center items-center">
+        <input
+          className="mt-3 px-2 py-2 rounded-lg text-[#9b9b9a] bg-[rgba(47,47,47,255)] w-60  border-none focus:outline-none"
+          type="text"
+          placeholder="Enter the URL to block"
+          id="urlInput"
+        />
 
-      <label htmlFor="Monday">Monday</label>
-      <input type="checkbox" name="Monday" id="Monday" />
+        <div className="flex  mt-3">
+          <div className="flex flex-col mr-6">
+            <label className="mb-1" htmlFor="startTime">
+              Start Time
+            </label>
+            <input
+              type="time"
+              name="startTime"
+              className="bg-[rgba(47,47,47,255)] px-2 py-1 focus:outline-none rounded-sm"
+              placeholder="Enter the start time in (HH:MM)"
+              id="startTime"
+            />
+          </div>
 
-      <label htmlFor="Tuesday">Tuesday</label>
-      <input type="checkbox" name="Tuesday" id="Tuesday" />
+          <div className="flex flex-col">
+            <label className="mb-1" htmlFor="endTime">
+              End Time
+            </label>
+            <input
+              type="time"
+              name="endTime"
+              className="bg-[rgba(47,47,47,255)] px-2 py-1 focus:outline-none rounded-sm"
+              placeholder="Enter the end time in (HH:MM)"
+              id="endTime"
+            />
+          </div>
+        </div>
+      </div>
 
-      <label htmlFor="Wednesday">Wednesday</label>
-      <input type="checkbox" name="Wednesday" id="Wednesday" />
+      <div className="mt-6">
+        <h3 className=" text-base font-medium">
+          Select Days to block the website
+        </h3>
+      </div>
 
-      <label htmlFor="Thru">Thru</label>
-      <input type="checkbox" name="Thru" id="Thru" />
+      <div className="mt-2 ml-4 text-base">
+        <div className="flex space-x-2">
+          <button
+            id="Monday"
+            onClick={() => toggleDay(0)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[0]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            M
+          </button>
+          <button
+            id="Tuesday"
+            onClick={() => toggleDay(1)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[1]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            T
+          </button>
+          <button
+            id="Wednesday"
+            onClick={() => toggleDay(2)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[2]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            W
+          </button>
+          <button
+            id="Thru"
+            onClick={() => toggleDay(3)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[3]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            T
+          </button>
+          <button
+            id="Friday"
+            onClick={() => toggleDay(4)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[4]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            F
+          </button>
+          <button
+            id="Sat"
+            onClick={() => toggleDay(5)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[5]
+                ? "bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            S
+          </button>
+          <button
+            id="Sunday"
+            onClick={() => toggleDay(6)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full ${
+              selectedDays[6]
+                ? "bg-bg-[rgb(35,35,35)] border  border-white"
+                : "bg-[rgba(47,47,47,255)]"
+            }`}
+          >
+            S
+          </button>
+        </div>
+        <div className="mt-6">
+          <button
+            id="submitButton"
+            onClick={clickHandler}
+            className="bg-[rgba(47,47,47,255)] -ml-4 px-2 py-1 rounded-md hover:cursor-pointer hover:bg-[rgb(57,57,57)]"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
 
-      <label htmlFor="Friday">Friday</label>
-      <input type="checkbox" name="Friday" id="Friday" />
-
-      <label htmlFor="Sat">Sat</label>
-      <input type="checkbox" name="Sat" id="Sat" />
-
-      <label htmlFor="Sunday">Sunday</label>
-      <input type="checkbox" name="Sunday" id="Sunday" />
-
-      <button id="submitButton" onClick={clickHandler}>
-        Submit
-      </button>
+      {isError && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-[rgba(33,33,33,255)] p-4 rounded-md shadow-md flex flex-col items-center">
+            <h1 className="text-base mb-4 text-center">Select all fields</h1>
+            <button
+              className="bg-[rgba(47,47,47,255)] px-4 py-2 rounded-md hover:cursor-pointer hover:bg-[rgb(57,57,57)]"
+              onClick={cancelButtonHandler}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
