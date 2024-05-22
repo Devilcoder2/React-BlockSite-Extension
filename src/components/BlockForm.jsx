@@ -67,7 +67,7 @@ const BlockForm = () => {
 
   return (
     <div className="text-center mt-5 text-[#b3b4b4]">
-      <h1 className="text-xl font-semibold">Block Website</h1>
+      {/* <h1 className="text-xl font-semibold">Block Website</h1> */}
       <div className="flex flex-col justify-center items-center">
         <input
           className="mt-3 px-2 py-2 rounded-lg text-[#9b9b9a] bg-[rgba(47,47,47,255)] w-60  border-none focus:outline-none"
