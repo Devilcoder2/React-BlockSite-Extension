@@ -1,93 +1,56 @@
 import { useState } from "react";
 import BlockForm from "./components/BlockForm";
 import Stats from "./components/Stats";
-import Tab from "@mui/material/Tab";
-import { StyledSubTabs } from "./utils/SubTabs.styles";
 
 const App = () => {
-  const [index, setIndex] = useState(0);
+  const [active, setActive] = useState(1);
 
-  const handleChange = (event, newIndex) => {
-    console.log("SubTab - index", newIndex, event);
-    setIndex(index === 0 ? 1 : 0);
+  const clickHandler = (index) => {
+    setActive(index);
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center bg-[rgba(47,47,47,255)]">
-        <StyledSubTabs value={index} onChange={handleChange}>
-          <Tab
-            label="Block a Website"
-            sx={
-              index === 1
-                ? {
-                    color: "#b3b4b4",
-                    fontSize: "11.2px",
-                    zIndex: "100",
-                    maxHeight: "48px",
-                    minHeight: "unset",
-                    "&:hover": {
-                      width: "128px",
-                      padding: 0,
-                      marginRight: "5px",
-                      marginLeft: "5px",
-                      height: "40px",
-                      marginTop: "5px",
-                    },
-                  }
-                : {
-                    color: "#b3b4b4",
-                    fontSize: "11.2px",
-                  }
-            }
-          />
+    <div className="">
+      <div className="bg-[rgba(47,47,47,255)] flex text-base h-12 text-[#9b9b9a]">
+        <div
+          onClick={() => clickHandler(1)}
+          className={` absolute pt-3  left-0 h-12  w-[154px] text-center ${
+            active === 1
+              ? "bg-[rgba(33,33,33,255)] rounded-t-2xl border-l-2 border-t-2 border-[rgba(47,47,47,255)]"
+              : "bg-[rgba(47,47,47,255)] z-10 rounded-br-2xl hover:cursor-pointer"
+          }`}
+        >
+          Stats
+        </div>
 
-          {index === 0 && (
-            <div className="bg-[rgba(33,33,33,255)] w-[28px] h-[15px] z-40 absolute bottom-0 left-[140px]">
-              <div
-                className={`bg-[rgba(47,47,47,255)] h-[15px] z-40  bottom-0 left-[140px] rounded-bl-2xl 
-                }`}
-              ></div>
-            </div>
-          )}
+        {active === 1 && (
+          <div className="absolute top-0 border-t-2 border-r-2 border-[rgba(47,47,47,255)]  z-20 left-[126px] bg-[rgba(47,47,47,255)]">
+            <div className="bg-[rgba(33,33,33,255)] w-4 h-4 z-30  rounded-tr-2xl"></div>
+          </div>
+        )}
 
-          {index === 1 && (
-            <div className="bg-[rgba(33,33,33,255)] w-[28px] h-[15px] z-40 relative bottom-0 left-[140px]">
-              <div
-                className={`bg-[rgba(47,47,47,255)] h-[15px] z-40  bottom-0 left-[140px] rounded-br-2xl 
-                }`}
-              ></div>
-            </div>
-          )}
+        {active === 2 && (
+          <div className="absolute top-0 z-20 border-t-2 border-[rgba(47,47,47,255)] left-[154px] bg-[rgba(47,47,47,255)]">
+            <div className="bg-[rgba(33,33,33,255)] w-4 h-4 z-30  rounded-tl-2xl"></div>
+          </div>
+        )}
 
-          <Tab
-            sx={
-              index === 0
-                ? {
-                    color: "#b3b4b4",
-                    fontSize: "11.2px",
-                    zIndex: "100",
-                    maxHeight: "48px",
-                    minHeight: "unset",
-                    "&:hover": {
-                      width: "150px",
-                      padding: 0,
-                      marginLeft: "5px",
-                      height: "40px",
-                      marginTop: "5px",
-                    },
-                  }
-                : {
-                    color: "#b3b4b4",
-                    fontSize: "11.2px",
-                  }
-            }
-            label="View Blocked Sites"
-          />
-        </StyledSubTabs>
+        <div
+          onClick={() => clickHandler(2)}
+          className={` pt-3 absolute h-12 px-5 right-0 w-[158px] text-center ${
+            active === 2
+              ? "bg-[rgba(33,33,33,255)] rounded-t-2xl border-t-2 border-r-2 border-[rgba(47,47,47,255)]"
+              : "bg-[rgba(47,47,47,255)] z-10 rounded-bl-2xl hover:cursor-pointer"
+          }`}
+        >
+          Block
+        </div>
       </div>
 
-      {index === 0 ? <BlockForm /> : <Stats />}
+      <div>
+        {active === 1 && <Stats />}
+        {active === 2 && <BlockForm />}
+      </div>
     </div>
   );
 };
