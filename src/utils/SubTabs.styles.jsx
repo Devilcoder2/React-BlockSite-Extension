@@ -2,14 +2,15 @@ import styled from "@emotion/styled";
 import { Tabs } from "@mui/material";
 
 export const StyledSubTabs = styled(Tabs)`
+  position: relative;
+
   .MuiButtonBase-root.MuiTab-root {
     background: rgba(47, 47, 47, 255);
-    border-radius: 16px;
+    border-radius: 16px 16px 16px 16px;
     color: #b3b4b4;
     border-bottom: 3px solid rgba(47, 47, 47, 255);
-    z-index: 10;
+    z-index: 50;
     transition: background 0.3s, color 0.3s, transform 0.3s;
-    position: relative;
 
     :hover {
       background: rgba(65, 65, 65, 255);
@@ -20,10 +21,10 @@ export const StyledSubTabs = styled(Tabs)`
     background: rgba(33, 33, 33, 255); /* Active tab background */
     border-top: 3px solid rgba(47, 47, 47, 255);
     border-left: 3px solid rgba(47, 47, 47, 255);
-    border-right: 3px solid rgba(47, 47, 47, 255);
+    // border-right: 3px solid rgba(47, 47, 47, 255);
     border-bottom: none;
     color: #b3b4b4; /* Text color for selected tab */
-    z-index: 10;
+
     border-radius: 16px 16px 0 0; /* Keep the top border radius */
 
     ::after {
@@ -43,16 +44,24 @@ export const StyledSubTabs = styled(Tabs)`
     display: none;
   }
 
-  .MuiButtonBase-root.MuiTab-root.Mui-selected
-    + .MuiButtonBase-root.MuiTab-root:not(.Mui-selected)::before {
-    content: "";
+  .tab-indicator {
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 6px; /* Adjust as needed */
-    height: 6px; /* Adjust as needed */
+    left: ${({ index }) =>
+      index === 0 ? "140px" : "auto"}; /* Adjust left position based on index */
+    width: 28px; /* Adjust as needed */
+    height: 15px; /* Adjust as needed */
     background: rgba(33, 33, 33, 255); /* Color for the small div */
-    border-radius: 0 0 0 16px; /* Match the bottom-left radius of the active tab */
+    border-radius: ${({ index }) =>
+      index === 0
+        ? "0 0 0 16px"
+        : "0 0 16px 0"}; /* Match the bottom-left radius of the active tab */
+    z-index: 40;
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(65, 65, 65, 255);
+    }
   }
 `;
 
